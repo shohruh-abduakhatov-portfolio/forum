@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  <script>
+    console.log(">>>", window.location.search.substring(1));
+    const query = window.location.search.substring(1)
+    const token = query.split('access_token=')[1]
+    const _from = query.split('from=')[1].split("&")[0]
+    window.location.href = "/"+_from+"/oauth?token=" + token;
+  </script>
+</head>
+
+<body>
+ 
+</body>
+
+</html>

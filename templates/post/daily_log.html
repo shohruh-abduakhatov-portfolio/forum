@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>{{ .title }}</title>
+</head>
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8px;
+  }
+
+  table {
+    width:100%; 
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+
+  tr, td, th {
+    border: 1px solid black;
+    text-align: left;
+    padding-left: 6px;
+  }
+
+  th, td {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 3px;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+</style>
+
+
+<style>
+  .signature {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    text-align: right;
+  }
+
+  .signature > div:nth-child(2) {
+    width: 2%;
+  }
+
+  .signature > div:first-child {
+    font-weight: bold;
+  }
+
+  .signature-in {
+    text-align: center;
+    font-size: smaller;
+  }
+
+</style>
+
+<style>
+  .days-outer td, 
+  .days-outer th {
+    text-align: center;
+    padding-left: -6px;
+  }
+
+  .days-outer {
+    border-style: hidden;
+  }
+
+  .days-outer > tbody {
+    width: 100%;
+  }
+
+  .days-outer > tbody > tr {
+    width: 100%;
+    display: inline-table;
+  }
+
+  .days-outer table {
+    background-color: antiquewhite;
+  }
+
+  .days-outer > tbody > tr, 
+  .days-outer  > tbody > tr > td, 
+  .days-outer  > tbody > th {
+    border-style: hidden;
+  }
+
+  .days-outer td:first-child {
+    width: 70%;
+  }
+
+</style>
+
+<style>
+  .info th {
+    width: 16%;
+  }
+
+  .info td {
+    width: 34%;
+  }
+</style>
+
+<style>
+  .event th:nth-child(1) {
+    width: 4%;
+  }
+  
+  .event th:nth-child(2),
+  .event th:nth-child(3),
+  .event th:nth-child(4),
+  .event th:nth-child(6),
+  .event th:nth-child(7) {
+    width: 10%;
+  }
+</style>
+
+
+<body>
+    <h1>DRIVER'S DAILY LOG</h1>
+    <h3>
+      Wednesday, October 21, 2020
+    </h3>
+    {{ .date }}
+
+
+    {{ .text }}
+
+    <table class="info">
+      <tr>
+        <th>Driver</th>
+        <td>Driver **** </td>
+
+        <th>Co-Drivers (ID)</th>
+        <td>Co-Drivers (ID)</td>
+
+      </tr>
+      <tr>
+        <th>ID</th>
+        <td>ID **** </td>
+
+        <th>Time Zone</th>
+        <td>Time Zone</td>
+      </tr>
+      <tr>
+        <th>DL Number</th>
+        <td>DL Number **** </td>
+
+        <th>Time Zone Offset</th>
+        <td>Time Zone Offset</td>
+      </tr>
+      <tr>
+        <th>ST</th>
+        <td>ST **** </td>
+
+        <th>24 Period Starting Time</th>
+        <td>24 Period Starting Time</td>
+      </tr>
+      <tr>
+        <th>Provider ID</th>
+        <td>Provider ID **** </td>
+
+        <th>Vehicles (VIN)</th>
+        <td>Vehicles (VIN)</td>
+      </tr>
+      <tr>
+        <th>Provider</th>
+        <td>Provider **** </td>
+
+        <th>Exempt Driver Status</th>
+        <td>Exempt Driver Status</td>
+      </tr>
+      <tr>
+        <th>Carrier</th>
+        <td>Carrier **** </td>
+
+        <th>Trailers</th>
+        <td>Trailers</td>
+      </tr>
+      <tr>
+        <th>US DOT #</th>
+        <td>US DOT # **** </td>
+
+        <th>Distance</th>
+        <td>Distance</td>
+      </tr>
+      <tr>
+        <th>Main Office</th>
+        <td>Main Office **** </td>
+
+        <th>To Address</th>
+        <td>To Address</td>
+      </tr>
+      <tr>
+        <th>Home Terminal</th>
+        <td>Home Terminal **** </td>
+
+        <th>Data Diagnostic Indicators</th>
+        <td>Data Diagnostic Indicators</td>
+      </tr>
+      <tr>
+        <th>From Address</th>
+        <td>From Address **** </td>
+
+        <th>Unidentified Driver Records</th>
+        <td>Unidentified Driver Records</td>
+      </tr>
+      <tr>
+        <th>Shipping Docs</th>
+        <td colspan="3">Shipping Docs **** </td>
+
+      </tr>
+      <tr>
+        <th>Malfunction Indicators</th>
+        <td>Malfunction Indicators **** </td>
+
+        <th>Current Location</th>
+        <td>Current Location **** </td>
+      </tr>
+      <tr>
+        <th>Notes</th>
+        <td colspan="3">Notes **** </td>
+
+      </tr>
+
+    </table> 
+
+    <br>
+
+    <div style="font-weight: bold;">Odometers</div>
+    <table>
+      <tr>
+        <th>Vehicle</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Distance</th>
+      </tr>
+      {{ if not .odometers }}
+        <tr>
+          <td style="
+              font-style: italic;
+              text-align: center;" 
+              colspan="4"> no records </td>
+        </tr>
+      {{ else }}
+
+      {{ end }}
+    </table>
+
+    <br>
+
+    <table>
+      <tr>
+        <td>
+          <img src="">
+        </td>
+      </tr>
+    </table>
+
+    <br>
+    
+
+    <table class="days-outer">
+      <tr>
+      <td>
+        <table>
+          <tr>
+            <th>Recap</th>
+            <td>0:00<br>Oct 14</td>
+            <td>0:00<br>Oct 14</td>
+            <td>0:00<br>Oct 14</td>
+            <td>0:00<br>Oct 14</td>
+            <td>0:00<br>Oct 14</td>
+            <td>0:00<br>Oct 14</td>
+            <td>0:00<br>Oct 14</td>
+          </tr>
+        </table>
+      </td>
+
+      <td>
+        <table> 
+          <tr> <th>Available On Duty<br>65:35</th> </tr>
+        </table>
+      </td>
+
+      <td>
+        <table> 
+          <tr> <th>Worked Today<br>4:35</th> </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+
+    <br>
+
+    <div style="font-weight: bold;">Events</div>
+    <table class='event'>
+      <tr>
+        <th>No</th>
+        <th>Status</th>
+        <th>Time (EST)</th>
+        <th>Duration</th>
+        <th>Location</th>
+        <th>Odometer</th>
+        <th>Eng. Hours</th>
+        <th>Notes</th>
+      </tr>
+      {{ if not .odometers }}
+        <tr>
+          <td style="
+              font-style: italic;
+              text-align: center;" 
+              colspan="8"> no records </td>
+        </tr>
+      {{ else }}
+
+      {{ end }}
+    </table>
+
+    <br><br><br><br><br>
+
+    <div>
+      <div class="signature">
+        
+        <div>I certify these entries are true correct</div>
+  
+        <div>  </div>
+  
+        <div class="signature-in">
+          <span>________________________________________________________</span>
+          <br>
+          <span>Driver's signature</span>
+
+        </div>
+      </div>
+    </div>
+
+ 
+
+</body>
+</html>
+
+
+

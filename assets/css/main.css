@@ -1,0 +1,12 @@
+
+
+
+.imgPreview {
+	border: 1px solid #5e72e447;;
+	width: 100%;
+	height: 100%;
+	background-repeat: no-repeat;
+	background-color: aliceblue;
+	background-size: contain;
+	background-position: center center;
+}
