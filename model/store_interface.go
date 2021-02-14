@@ -27,14 +27,21 @@ type SessionStore interface {
 	Find(string) (*Session, error)
 	Save(*Session) error
 	Delete(*Session) error
+	GetAllSessions() error
 }
 
 // PostStore is a forum topic data store interface.
 type PostStore interface {
 	New(*Post) (int64, error)
-	Get(id int64) (*Post, error)
+	Modify(*Post) error
+	NewPostCategory(post *Post, ids []int) error
+	NewUserPost(post *Post) error
+	DeletePostCategories(ids []string) error
+	Get(id int64) (*Post, []*Category, *User, error)
 	GetLatest(offset, limit int) ([]*Post, error)
 	GetByCategory(offset, limit, category int) ([]*Post, error)
+	GetByUser(offset, limit int, userID string) ([]*Post, error)
+	GetLiked(offset, limit int, user string) ([]*Post, error)
 	// SetTitle(id int64, title string) error
 	Delete(id int64) error
 	IncrementReaction(id int64, reaction string) error

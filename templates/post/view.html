@@ -9,7 +9,7 @@
 
         <div class="row">
           <div class="col">
-            <h3 class="heading mb-0">By: <a href="/user/1" target="blank">@{{.Post.User.Username}}</a></h3>
+            <h3 class="heading mb-0">By: <a href="/user/1" target="blank">@{{.User.Username}}</a></h3>
           </div>
 
           {{if and (.hasAccess) (.IsMyPost)}}
@@ -24,9 +24,13 @@
 
         <div class="row mb-2 mt-2">
           <div class="col">
-            <a href="/posts-category/{{.Post.Category.ID}}" class="badge badge-primary">#{{.Post.Category.Name}}</a>
+            {{range .Categories}}
+            <a href="/posts-category/{{.ID}}" class="badge badge-primary">#{{.Name}}</a>
+            {{else}}
+            {{end}}
           </div>
         </div>
+
 
         <div class="row">
           <div class="col">
@@ -53,11 +57,11 @@
 
         <div id="reaction_{{.Post.ID}}" class="row pt-3 justify-content-center">
           <div class="col col-md-auto">
-            <a onclick="likePost()" style="cursor: pointer; color: #5e72e4;">
+            <a onclick="likePostDetails()" style="cursor: pointer; color: #5e72e4;">
               <i class="fas fa-thumbs-up fa-1x"></i>
               <span>{{.likes}}</span> </a></div>
           <div class="col col-md-auto">
-            <a onclick="dislikePost()" style="cursor: pointer; color: #5e72e4;">
+            <a onclick="dislikePostDetails()" style="cursor: pointer; color: #5e72e4;">
               <i class="fas fa-thumbs-down fa-1x"> </i>
               <span>{{.dislikes}}</span></a></div>
           <div class="col col-md-auto">

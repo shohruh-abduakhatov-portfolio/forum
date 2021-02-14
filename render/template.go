@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"path/filepath"
 
-	model "../model"
+	model "forum.com/model"
 )
 
 var (
@@ -47,6 +48,8 @@ func Template(w http.ResponseWriter, r *http.Request, name string, data map[stri
 
 	data["CurrentUser"] = model.RequestUser(r)
 	data["Flash"] = r.URL.Query().Get("flash")
+
+	log.Println(">>> CurrentUser", data["CurrentUser"])
 
 	funcs := template.FuncMap{
 		"yield": func() (template.HTML, error) {

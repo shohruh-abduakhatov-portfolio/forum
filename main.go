@@ -1,10 +1,9 @@
 package main
 
 import (
-	"./cmd"
+	"forum.com/cmd"
 )
 
 func main() {
 	cmd.Execute()
 }
-

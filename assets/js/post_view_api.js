@@ -1,12 +1,13 @@
-function likePost(postId) {
+function likePostDetails() {
+    let postId = getUrlId();
     $.ajax({
         type: "GET",
         url: '/api/v1/like-post',
         data: {
-            "postId": getUrlId()
+            "postId": postId
         },
         success: function (data) {
-            increment(data)
+            incrementPostDetails(data, postId)
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log("no data like err")
@@ -14,15 +15,16 @@ function likePost(postId) {
     });
 }
 
-function dislikePost() {
+function dislikePostDetails() {
+    let postId = getUrlId();
     $.ajax({
         type: "GET",
         url: '/api/v1/dislike-post',
         data: {
-            "postId": getUrlId()
+            "postId": postId
         },
         success: function (data) {
-            increment(data)
+            incrementPostDetails(data, postId)
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log("no data dislike err")

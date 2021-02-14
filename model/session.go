@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -41,10 +42,11 @@ func NewSession(w http.ResponseWriter) *Session {
 	}
 
 	cookie := http.Cookie{
-		Name:    sessionCookieName,
-		Value:   session.ID,
-		Expires: expiry,
-		Path:    "/",
+		Name:     sessionCookieName,
+		Value:    session.ID,
+		Expires:  expiry,
+		Path:     "/",
+		HttpOnly: true,
 	}
 
 	http.SetCookie(w, &cookie)
@@ -57,6 +59,8 @@ func RequestSession(r *http.Request) *Session {
 	if err != nil {
 		return nil
 	}
+	log.Println(">>> Cookie (Req Sess)", cookie)
+
 	session, err := GlobalSessionStore.Find(cookie.Value)
 	if err != nil && err != ErrNotFound {
 		panic(err)
@@ -80,6 +84,7 @@ func RequestUser(r *http.Request) *User {
 	if session == nil || session.UserID == "" {
 		return nil
 	}
+	log.Println(">>> Session (RequestUser)", session)
 	user, err := GlobalUserStore.Find(session.UserID)
 	if err != nil {
 		panic(err)

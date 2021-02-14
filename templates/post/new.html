@@ -28,6 +28,8 @@
         <div class="form-group">
           <label for="text">Text </label>
           <input id="Text" type="hidden" name="text" value="{{ .Post.Text }}">
+          <input id="category-ids" type="hidden" name="selected-categories"
+            value="{{range .Categories}},{{.ID}}{{else}}{{end}}">
           <div id="editor" class="mb-3"></div>
         </div>
 
@@ -42,7 +44,28 @@
         </div>
 
 
+        <style>
+          .chb>span {
+            margin-right: 40px;
+          }
+        </style>
 
+        <br> <br>
+        <div class="form-group">
+          <label>Categories: </label>
+        </div>
+        <div class="custom-control custom-checkbox mb-3 chb">
+          <span>
+            <input class="custom-control-input" id="customCheck2" type="checkbox">
+            <label class="custom-control-label" for="customCheck2">Unchecked</label>
+          </span>
+
+          <span>
+            <input class="custom-control-input" id="customCheck1" type="checkbox">
+            <label class="custom-control-label" for="customCheck1">Unchecked</label>
+          </span>
+
+        </div>
 
 
         {{if .Error}}
@@ -60,6 +83,16 @@
   </div>
 </div>
 
+<script>
+  let selected_cats = document.getElementById("category-ids").value
+  selected_cats = selected_cats ? selected_cats.split(',').slice(1) : []
+  console.log(selected_cats);
+</script>
+
+<script src="/assets/js/category_bind.js" type="text/javascript"></script>
+<script type="module">
+  callNewPostCategoryList(".chb", selected_cats)
+</script>
 <!-- editor plugin -->
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
   integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

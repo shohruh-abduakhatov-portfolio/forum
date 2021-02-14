@@ -1,8 +1,9 @@
 
-function getData() {
+function getData(refreshData) {
   showLoader()
   console.log(">> getData");
   offset += limit;
+  refreshData(offset)
   $.ajax({
     type: "GET",
     url: '/api/v1/posts',
@@ -23,11 +24,64 @@ function getData() {
   });
 }
 
+function getUserPostsData(refreshData) {
+  showLoader()
+  console.log(">> getUserPostsData");
+  offset += limit;
+  refreshData(offset)
+  $.ajax({
+    type: "GET",
+    url: '/api/v1/posts-by-user',
+    data: {
+      "limit": limit,
+      "offset": offset
+    },
+    dataType: "json",
+    traditional: true,
+    success: function (data) {
+      console.log("data", data)
+      setData(data)
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log("no data")
+      hideAll()
+    }
+  });
+}
 
-const fetchPostsByCategory = async () => {
+function getUserLikedData(refreshData) {
+  showLoader()
+  console.log(">> getUserLikedData");
+  offset += limit;
+  refreshData(offset)
+  $.ajax({
+    type: "GET",
+    url: '/api/v1/posts-liked',
+    data: {
+      "limit": limit,
+      "offset": offset
+    },
+    dataType: "json",
+    traditional: true,
+    success: function (data) {
+      console.log("data", data)
+      setData(data)
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log("no data")
+      hideAll()
+    }
+  });
+}
+
+
+
+
+const fetchPostsByCategory = async (refreshData) => {
   showLoader()
   console.log(">> fetchPostsByCategory");
   offset += limit;
+  refreshData
   return new Promise(
     (res, rej) => {
       $.ajax({
@@ -56,7 +110,8 @@ function likePost(postId) {
       "postId": postId
     },
     success: function (data) {
-      increment(postId, "like")
+      console.log(">> data received");
+      increment(data, postId)
     },
     error: function (jqXHR, textStatus, errorThrown) {
       console.log("no data like err")
@@ -73,7 +128,7 @@ function dislikePost(postId) {
       "postId": postId
     },
     success: function (data) {
-      increment(postId, "dislike")
+      increment(data, postId)
     },
     error: function (jqXHR, textStatus, errorThrown) {
       console.log("no data dislike err")

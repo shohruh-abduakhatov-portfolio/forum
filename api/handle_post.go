@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	model "../model"
+	model "forum.com/model"
 )
 
 func AllPostsHandler(w http.ResponseWriter, req *http.Request) {
@@ -116,7 +116,7 @@ func LikePost_GET(w http.ResponseWriter, r *http.Request) {
 	}
 
 	reactHelper(postID, session, model.LIKE_COUNT, model.LIKE)
-	post, err := model.GlobalPostStore.Get(int64(postID))
+	post, _, _, err := model.GlobalPostStore.Get(int64(postID))
 	js, err2 := json.Marshal(post)
 	if err2 != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -152,7 +152,7 @@ func DislikePost_GET(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post, err := model.GlobalPostStore.Get(int64(postID))
+	post, _, _, err := model.GlobalPostStore.Get(int64(postID))
 	js, err2 := json.Marshal(post)
 	if err2 != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

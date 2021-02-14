@@ -28,6 +28,8 @@ var (
 	errImage             = ValidationError(errors.New("Invalid Image"))
 
 	errSomethingWentWrong = ValidationError(errors.New("Something went wrong"))
+
+	errNoCategory = ValidationError(errors.New("No category assigned"))
 )
 
 var (

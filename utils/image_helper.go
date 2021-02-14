@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	model "../model"
+	model "forum.com/model"
 )
 
 var (
@@ -21,6 +21,9 @@ func ParseImage(w http.ResponseWriter, r *http.Request) (string, error) {
 	// 2. retrieve file
 	file, handler, err := r.FormFile("photo")
 	if err != nil {
+		if err == http.ErrMissingFile {
+			return "", nil
+		}
 		fmt.Println("Error Retrieving the File", err)
 		return "", err
 	}
@@ -46,7 +49,8 @@ func ParseImage(w http.ResponseWriter, r *http.Request) (string, error) {
 	}
 	tempFile.Write(fileBytes)
 	// 4. return result
-	return tempFile.Name(), nil
+	print(">> path: ", tempFile.Name())
+	return "/" + tempFile.Name(), nil
 }
 
 func ValidFormat(fileName string) bool {

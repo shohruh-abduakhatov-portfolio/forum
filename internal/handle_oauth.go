@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	model "../model"
-	render "../render"
+	model "forum.com/model"
+	render "forum.com/render"
 )
 
 func Redirect_GET(w http.ResponseWriter, req *http.Request) {

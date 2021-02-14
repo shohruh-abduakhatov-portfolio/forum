@@ -1,6 +1,14 @@
 #!/bin/bash
 
-image_name="ascii-art-web-docker"
+echo "[###] BUILDING"
+docker build -t forum --progress=plain .
 
-docker build -f Dockerfile.multistage -t $image_name .
-docker run --name ascii-art-web -p 8080:8080 --rm -d $image_name
+echo "[###] REMOVE OLD PROCESS"
+docker container stop $(docker ps -q)
+
+echo "[###] RUN ..."
+docker run -p 8000:8000 --rm -d forum
+
+# docker run -v /tmp/forum-db:/src/forum.db
+
+echo "[###] DONE!"  

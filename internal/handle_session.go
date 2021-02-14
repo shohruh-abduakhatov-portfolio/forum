@@ -3,7 +3,7 @@ package internal
 import (
 	"net/http"
 
-	model "../model"
+	model "forum.com/model"
 )
 
 func HandleSignOut(w http.ResponseWriter, r *http.Request) {

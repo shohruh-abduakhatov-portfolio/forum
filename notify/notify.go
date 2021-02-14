@@ -1,9 +1,11 @@
-package model
+package notify
+
+import model "forum.com/model"
 
 type Message struct {
 	title string
 	body  string
-	user  User
+	user  model.User
 	post  interface{}
 }
 

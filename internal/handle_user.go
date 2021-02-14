@@ -1,10 +1,11 @@
 package internal
 
 import (
+	"fmt"
 	"net/http"
 
-	model "../model"
-	render "../render"
+	model "forum.com/model"
+	render "forum.com/render"
 )
 
 // func HandleUserEdit(w http.ResponseWriter, r *http.Request) {
@@ -40,6 +41,26 @@ func HandleUserAccount(w http.ResponseWriter, req *http.Request) {
 	default:
 		http.Error(w, "Only GET method allowed, return to main page", 405)
 	}
+}
+
+func HandleUserPosts(w http.ResponseWriter, req *http.Request) {
+	if req.URL.Path != "/user-posts" {
+		http.Error(w, "Go back to the main page", 404)
+		return
+	}
+	switch req.Method {
+	case "GET":
+		HandleUserPosts_GET(w, req)
+	default:
+		http.Error(w, "Only GET method allowed, return to main page", 405)
+	}
+}
+
+func HandleUserPosts_GET(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("/user-posts - GET")
+	render.Template(w, r, "post/by-user", map[string]interface{}{
+		"Mode": "My Posts.",
+	})
 }
 
 func HandleEdit_GET(w http.ResponseWriter, r *http.Request) {

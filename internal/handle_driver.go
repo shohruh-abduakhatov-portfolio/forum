@@ -3,7 +3,7 @@ package internal
 import (
 	"net/http"
 
-	render "../render"
+	render "forum.com/render"
 )
 
 func DriverLogHandler(w http.ResponseWriter, req *http.Request) {

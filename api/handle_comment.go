@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	model "../model"
+	model "forum.com/model"
 )
 
 func PostCommentsHandler(w http.ResponseWriter, req *http.Request) {

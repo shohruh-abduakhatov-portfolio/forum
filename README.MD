@@ -14,7 +14,6 @@ Forum project
 - [x] queries
 - [x] create index for double PKs
 - [x] delete on cascade
-- [ ] (?)trigger on delete
 
 ### Authentication:
 - [x] register
@@ -28,27 +27,29 @@ Forum project
 
 <b>[Bonus:](https://github.com/01-edu/public/tree/master/subjects/forum/authentication)</b>
 
-- [ ] Google or/and Github or/and FB auth
+- [x] Github 
+- [ ] Google or/and FB auth
 
 
 ### Communication:
 - [x] registered users create posts and comments
-- [ ] associate one or more categories to post created
+- [x] associate one or more categories to post created
 - [x] View only: unregistered users
 
 
 ### Likes and Dislikes:
 - [x] number of likes/dislikes
 - [x] only registered users
+- [x] put like and dislike
 
 ### Filter posts by:
 - [x] categories
-- [ ] created posts by user
-- [ ] liked posts by user
+- [x] created posts by user // api ready
+- [x] liked posts by user // api ready
 
 ### Docker:
-- [x] golang
-- [x] sqlite3
+- [ ] golang
+- [ ] sqlite3
 
 
 
@@ -107,3 +108,7 @@ check others
 - [sqlite example](https://github.com/fevziomurtekin/go-sqlite/blob/master/sqlite.go)
 
 - [oauth golang](https://github.com/andrewtian/golang-github-oauth-example) | [2](https://github.com/sohamkamani/go-oauth-example) | [blog](https://www.sohamkamani.com/golang/2018-06-24-oauth-with-golang/) | [lib](https://github.com/gosimple/oauth2)
+
+- [Rate Limiting](https://www.alexedwards.net/blog/how-to-rate-limit-http-requests) | 
+
+- [SSL server example](https://gist.github.com/samthor/5ff8cfac1f80b03dfe5a9be62b29d7f2)

@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -33,7 +34,9 @@ func (s *sessionStore) Save(session *Session) error {
 		return err
 	}
 
-	return err
+	s.GetAllSessions()
+
+	return nil
 }
 
 func (s *sessionStore) Delete(session *Session) error {
@@ -44,6 +47,27 @@ func (s *sessionStore) Delete(session *Session) error {
 
 	_, err = stmt.Exec(session.ID)
 	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *sessionStore) GetAllSessions() error {
+	query := selectFromSession
+	rows, err := s.conn.Query(query)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		user, err := s.scanSession(rows)
+		if err != nil {
+			return err
+		}
+		fmt.Println(">> user:", user.ID, user.UserID, user.Expired)
+	}
+	if err = rows.Err(); err != nil {
 		return err
 	}
 	return nil

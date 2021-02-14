@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	model "../model"
+	model "forum.com/model"
 )
 
 var (

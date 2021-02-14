@@ -4,7 +4,7 @@ function setData(data) {
   if (data == {}) {
     $("#loader").css('visibility', 'hidden');
   }
-  mainContainer.innerHTML = ""
+  // mainContainer.innerHTML = ""
   for (i = 0; i < data.length; i++) {
     card = renderPost(data[i])
     mainContainer.appendChild(card)
@@ -122,10 +122,23 @@ function hideLoader() {
 }
 
 
-function increment(post) {
-  console.log(post);
+function increment(post, postId) {
+  console.log(">> " + post);
+  // $("i[class~=fa-thumbs-down] ~ span").text(post.dislikeCount)
+  // $("i[class~=fa-thumbs-up] ~ span").text(post.likeCount)
+
+  $(`a[onclick="dislikePost(${postId})"] span`).text(post.dislikeCount)
+  $(`a[onclick="likePost(${postId})"] span`).text(post.likeCount)
+
+}
+
+
+
+function incrementPostDetails(post, postId) {
+  console.log(">> " + post);
   $("i[class~=fa-thumbs-down] ~ span").text(post.dislikeCount)
   $("i[class~=fa-thumbs-up] ~ span").text(post.likeCount)
+
 }
 
 function getUrlId() {

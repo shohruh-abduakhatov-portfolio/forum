@@ -102,7 +102,8 @@
     <span class="sr-only">Loading</span>
   </div>
 </div>
-<button id="loadMore" type="button" onclick="getData()" class="btn btn-outline-primary btn-lg btn-block mb-3">Load more
+<button id="loadMore" type="button" onclick="getData(refreshData)"
+  class="btn btn-outline-primary btn-lg btn-block mb-3">Load more
   posts...</button>
 
 <!-- Ajax -->
@@ -114,7 +115,10 @@
   var limit = 10;
   var offset = -(limit);
   var mainContainer = document.getElementById('mainContainer');
-  getData()
+  const refreshData = (_off) => {
+    offset = _off
+  }
+  getData(refreshData)
 </script>
 
 {{end}}

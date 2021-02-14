@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	model "../model"
+	model "forum.com/model"
 )
 
 func CategoryListHandler(w http.ResponseWriter, req *http.Request) {
@@ -51,6 +51,112 @@ func AllPostsByCategoryHandler(w http.ResponseWriter, req *http.Request) {
 	default:
 		http.Error(w, "Only GET method allowed, return to main page", 405)
 	}
+}
+
+func AllPostsLikedHandler(w http.ResponseWriter, req *http.Request) {
+	fmt.Println(req.URL.Path)
+	if req.URL.Path != "/api/v1/posts-liked" {
+		http.Error(w, "Go back to the main page", 404)
+		return
+	}
+	switch req.Method {
+	case "GET":
+		AllPostsLikedHandler_GET(w, req)
+	default:
+		http.Error(w, "Only GET method allowed, return to main page", 405)
+	}
+}
+
+func AllPostsByUserHandler(w http.ResponseWriter, req *http.Request) {
+	fmt.Println(req.URL.Path)
+	if req.URL.Path != "/api/v1/posts-by-user" {
+		http.Error(w, "Go back to the main page", 404)
+		return
+	}
+	switch req.Method {
+	case "GET":
+		AllPostsByUserHandler_GET(w, req)
+	default:
+		http.Error(w, "Only GET method allowed, return to main page", 405)
+	}
+}
+
+func AllPostsLikedHandler_GET(w http.ResponseWriter, r *http.Request) {
+	limit := r.URL.Query()["limit"]
+	offset := r.URL.Query()["offset"]
+	session := model.RequestSession(r)
+
+	if limit == nil || len(limit) != 1 || offset == nil || len(offset) != 1 {
+		// todo render 404
+		http.Error(w, "Params required", 404)
+		return
+	}
+
+	limitInt, err := strconv.Atoi(limit[0])
+	if err != nil {
+		http.Error(w, "Invalid limit param", 404)
+		return
+	}
+	offsetInt, err := strconv.Atoi(offset[0])
+	if err != nil {
+		http.Error(w, "Id required", 404)
+		return
+	}
+
+	posts, err := model.GlobalPostStore.GetLiked(offsetInt, limitInt, session.UserID)
+	if err != nil || posts == nil {
+		http.Error(w, "Error", 404)
+		return
+	}
+
+	js, err2 := json.Marshal(posts)
+	if err2 != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+
+}
+
+func AllPostsByUserHandler_GET(w http.ResponseWriter, r *http.Request) {
+	limit := r.URL.Query()["limit"]
+	offset := r.URL.Query()["offset"]
+	session := model.RequestSession(r)
+
+	if limit == nil || len(limit) != 1 || offset == nil || len(offset) != 1 {
+		// todo render 404
+		http.Error(w, "Params required", 404)
+		return
+	}
+
+	limitInt, err := strconv.Atoi(limit[0])
+	if err != nil {
+		http.Error(w, "Invalid limit param", 404)
+		return
+	}
+	offsetInt, err := strconv.Atoi(offset[0])
+	if err != nil {
+		http.Error(w, "Id required", 404)
+		return
+	}
+
+	posts, err := model.GlobalPostStore.GetByUser(offsetInt, limitInt, session.UserID)
+	if err != nil || posts == nil {
+		http.Error(w, "Error", 404)
+		return
+	}
+
+	js, err2 := json.Marshal(posts)
+	if err2 != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+
 }
 
 func AllPostsByCategoryHandler_GET(w http.ResponseWriter, r *http.Request) {

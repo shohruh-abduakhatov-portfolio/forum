@@ -1,15 +1,17 @@
 package cmd
 
 import (
+	"crypto/tls"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
-	api "../api"
-	config "../config"
-	internal "../internal"
-	model "../model"
+	api "forum.com/api"
+	config "forum.com/config"
+	internal "forum.com/internal"
+	model "forum.com/model"
 )
 
 func init() {
@@ -20,60 +22,61 @@ func init() {
 const api_str = "/api/v1"
 
 func Execute() {
+	mux := http.NewServeMux()
+	// http.
 	// Api - V1
-	http.Handle("/log", http.HandlerFunc(internal.DriverLogHandler))
+	mux.Handle("/log", http.HandlerFunc(internal.DriverLogHandler))
 	// posts
-	http.Handle(api_str+"/posts", http.HandlerFunc(api.AllPostsHandler))
-	http.Handle(api_str+"/posts-by-category", http.HandlerFunc(api.AllPostsByCategoryHandler))
-	http.Handle(api_str+"/like-post", http.HandlerFunc(api.LikePostHandler))
-	http.Handle(api_str+"/dislike-post", http.HandlerFunc(api.DislikePostHandler))
+	mux.Handle(api_str+"/posts", http.HandlerFunc(api.AllPostsHandler))
+	mux.Handle(api_str+"/posts-by-category", http.HandlerFunc(api.AllPostsByCategoryHandler))
+	mux.Handle(api_str+"/posts-by-user", Authorize(http.HandlerFunc(api.AllPostsByUserHandler), User))
+	mux.Handle(api_str+"/posts-liked", Authorize(http.HandlerFunc(api.AllPostsLikedHandler), User))
+	mux.Handle(api_str+"/like-post", Authorize(http.HandlerFunc(api.LikePostHandler), User))
+	mux.Handle(api_str+"/dislike-post", Authorize(http.HandlerFunc(api.DislikePostHandler), User))
 	// comments
-	http.Handle(api_str+"/comments", http.HandlerFunc(api.PostCommentsHandler))
-	http.Handle(api_str+"/comment/new", http.HandlerFunc(api.NewCommentHandler))
+	mux.Handle(api_str+"/comments", http.HandlerFunc(api.PostCommentsHandler))
+	mux.Handle(api_str+"/comment/new", Authorize(http.HandlerFunc(api.NewCommentHandler), User))
 	// Categories
-	http.Handle(api_str+"/categories", http.HandlerFunc(api.CategoryListHandler))
+	mux.Handle(api_str+"/categories", http.HandlerFunc(api.CategoryListHandler))
 
+	mux.Handle("/", http.HandlerFunc(internal.Handle))
 	// Posts
-	http.Handle("/post/new", http.HandlerFunc(internal.NewPostHandler))
-	http.Handle("/post/edit", http.HandlerFunc(internal.NewEditHandler))
-	http.Handle("/post/delete", http.HandlerFunc(internal.NewEditHandler))
-	http.Handle("/posts", http.HandlerFunc(internal.AllPostsHandler))
-	http.Handle("/posts-category/", http.HandlerFunc(internal.AllPostsCategoryHandler))
-	http.Handle("/post/", http.HandlerFunc(internal.PostHandler))
-	http.Handle("/user-reacted-posts", Authorize(http.HandlerFunc(internal.HandleUserAccount), Admin))
-	http.Handle("/user-posts", Authorize(http.HandlerFunc(internal.HandleUserAccount), Admin))
+	mux.Handle("/post/new", Authorize(http.HandlerFunc(internal.NewPostHandler), User))
+	mux.Handle("/post/edit", http.HandlerFunc(internal.NewEditHandler))
+	mux.Handle("/post/delete", http.HandlerFunc(internal.NewEditHandler))
+	mux.Handle("/posts", http.HandlerFunc(internal.AllPostsHandler))
+	mux.Handle("/posts-category/", http.HandlerFunc(internal.AllPostsCategoryHandler))
+	mux.Handle("/post/", http.HandlerFunc(internal.PostHandler))
+	mux.Handle("/user-reacted-posts", Authorize(http.HandlerFunc(internal.UserReactedPostHandler), User))
+	mux.Handle("/user-posts", Authorize(http.HandlerFunc(internal.HandleUserPosts), User))
 
 	// reaction
-	http.Handle("/reaction", http.HandlerFunc(internal.AllPostsHandler))
+	mux.Handle("/reaction", http.HandlerFunc(internal.AllPostsHandler))
 
 	// User pages handlers
-	http.Handle("/edit", Authorize(http.HandlerFunc(internal.HandleUserEdit), Admin))
-	http.Handle("/account", Authorize(http.HandlerFunc(internal.HandleUserAccount), Admin))
+	mux.Handle("/edit", Authorize(http.HandlerFunc(internal.HandleUserEdit), User))
+	mux.Handle("/account", Authorize(http.HandlerFunc(internal.HandleUserAccount), User))
 
 	// Auth
-	http.Handle("/register", http.HandlerFunc(internal.HandleRegister))
-	http.Handle("/login", http.HandlerFunc(internal.LoginHandler))
-	http.Handle("/sign-out", Authorize(http.HandlerFunc(internal.HandleSignOut), Admin))
+	mux.Handle("/register", http.HandlerFunc(internal.HandleRegister))
+	mux.Handle("/login", http.HandlerFunc(internal.LoginHandler))
+	mux.Handle("/sign-out", Authorize(http.HandlerFunc(internal.HandleSignOut), User))
 
 	// Oauth
-	// http.Handle("/redirect", http.HandlerFunc(internal.Redirect_GET))
-	http.Handle("/github/oauth/redirect", http.HandlerFunc(internal.HandleGithubRedirect))
-	http.Handle("/github/oauth", http.HandlerFunc(internal.GithubAuthHandler))
+	// mux.Handle("/redirect", http.HandlerFunc(internal.Redirect_GET))
+	mux.Handle("/github/oauth/redirect", http.HandlerFunc(internal.HandleGithubRedirect))
+	mux.Handle("/github/oauth", http.HandlerFunc(internal.GithubAuthHandler))
 
-	// http.Handle("/", Authorize(http.HandlerFunc(internal.ShowArtistsHandler), Admin))
+	// mux.Handle("/", Authorize(http.HandlerFunc(internal.ShowArtistsHandler), User))
 
 	// static
-	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/"))))
+	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/"))))
 
 	// Custom handler
 
 	// Run server
-	port := getPort()
-	fmt.Println("Server is listening...", "127.0.0.1"+port)
-	err := http.ListenAndServe(port, nil)
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
-	}
+	app := App{port: getPort(), mux: mux}
+	app.Run(mux)
 }
 
 func getPort() string {
@@ -82,4 +85,39 @@ func getPort() string {
 		port = "8000"
 	}
 	return ":" + port
+}
+
+type App struct {
+	port string
+	mux  *http.ServeMux
+}
+
+func (a *App) Run(mux *http.ServeMux) {
+	cer, err := tls.LoadX509KeyPair("config/crt/localhost.crt", "config/crt/localhost.key")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	server := &http.Server{
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
+		IdleTimeout:  30 * time.Second,
+		Addr:         ":https",
+		TLSConfig: &tls.Config{
+			Certificates: []tls.Certificate{cer},
+		},
+		Handler:      limit(mux),
+		TLSNextProto: make(map[string]func(*http.Server, *tls.Conn, http.Handler), 0),
+	}
+
+	go func() {
+		log.Fatal(http.ListenAndServe(":http", nil))
+	}()
+
+	fmt.Println("Server is listening...", "https://localhost")
+	err = server.ListenAndServeTLS("", "")
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
 }

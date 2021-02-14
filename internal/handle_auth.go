@@ -1,11 +1,12 @@
 package internal
 
 import (
+	"log"
 	"net/http"
 	"os"
 
-	model "../model"
-	render "../render"
+	model "forum.com/model"
+	render "forum.com/render"
 )
 
 func AuthenticateRequest(w http.ResponseWriter, r *http.Request) {
@@ -99,6 +100,12 @@ func HandleLogin_POST(w http.ResponseWriter, r *http.Request) {
 	if next == "" {
 		next = "/posts"
 	}
+	cookie, err := r.Cookie("GophrSession")
+	if err == nil {
+		log.Println("/", r.URL.Path)
+		log.Println(">>> ", cookie.Value)
+	}
+
 	http.Redirect(w, r, next+"?flash=Signed+in", http.StatusFound)
 }
 
